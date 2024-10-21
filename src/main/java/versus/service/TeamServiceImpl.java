@@ -1,4 +1,6 @@
 package versus.service;
 
-public class TeamServiceImpl {
+import versus.service.interfaces.TeamService;
+
+public class TeamServiceImpl implements TeamService {
 }

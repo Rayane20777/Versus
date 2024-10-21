@@ -1,4 +1,7 @@
 package versus.service;
 
-public class GameServiceImpl {
+import versus.service.interfaces.GameService;
+
+public class GameServiceImpl implements GameService {
+
 }

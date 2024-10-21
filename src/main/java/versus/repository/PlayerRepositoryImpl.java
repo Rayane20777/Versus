@@ -1,4 +1,6 @@
 package versus.repository;
 
-public class PlayerRepositoryImpl {
+import versus.repository.interfaces.PlayerRepository;
+
+public class PlayerRepositoryImpl implements PlayerRepository {
 }

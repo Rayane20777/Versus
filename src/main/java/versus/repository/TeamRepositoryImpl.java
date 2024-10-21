@@ -1,4 +1,6 @@
 package versus.repository;
 
-public class TeamRepositoryImpl {
+import versus.repository.interfaces.TeamRepository;
+
+public class TeamRepositoryImpl implements TeamRepository {
 }

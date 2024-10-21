@@ -1,4 +1,4 @@
 package versus.service;
 
-public class PlayerServiceImpl {
+public class PlayerServiceImpl impelements PlayerService {
 }
