@@ -8,6 +8,24 @@
     <bean id="playerRepository" class="versus.repository.PlayerRepositoryImpl"/>
     <bean id="teamRepository" class="versus.repository.TeamRepositoryImpl"/>
     <bean id="tournamentRepository" class="versus.repository.TournamentRepositoryImpl"/>
+    <bean id="tournamentRepositoryExtension" class="versus.repository.TournamentRepositoryExtension"/>
+
+    <!-- Service Beans -->
+    <bean id="gameService" class="versus.service.GameServiceImpl">
+        <constructor-arg ref="gameRepository"/>
+    </bean>
+    <bean id="playerService" class="versus.service.PlayerServiceImpl">
+        <constructor-arg ref="playerRepository"/>
+    </bean>
+    <bean id="teamService" class="versus.service.TeamServiceImpl">
+        <constructor-arg ref="teamRepository"/>
+    </bean>
+    <bean id="tournamentService" class="versus.service.TournamentServiceImpl">
+        <constructor-arg ref="tournamentRepository"/>
+    </bean>
+
+    <!-- Utility Bean -->
+    <bean id="helper" class="versus.util.Helper"/>
 
 
 
