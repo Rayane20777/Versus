@@ -5,9 +5,9 @@ import versus.model.Player;
 import java.util.List;
 
 public interface PlayerRepository {
-    Player getPlayerById(int id);
+    Player getPlayerById(long id);
     List<Player> getAllPlayers();
     Player createPlayer(Player player);
     Player updatePlayer(Player player);
-    void deletePlayer(int id);
+    void deletePlayer(long id);
 }

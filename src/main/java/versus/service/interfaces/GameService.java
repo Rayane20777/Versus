@@ -7,8 +7,8 @@ import java.util.List;
 public interface GameService {
     Game createGame(Game game);
     Game updateGame(Game game);
-    Game getGameById(int id);
+    Game getGameById(long id);
     List<Game> getAllGames();
-    void deleteGame(int id);
+    void deleteGame(long id);
 
 }

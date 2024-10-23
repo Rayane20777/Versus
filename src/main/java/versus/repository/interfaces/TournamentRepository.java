@@ -1,13 +1,13 @@
 package versus.repository.interfaces;
 
-import versus.model.Team;
+import versus.model.Tournament;
 
 import java.util.List;
 
 public interface TournamentRepository {
-    Team getTeamById(int id);
-    List<Team> getAllTeams();
-    Team createTeam(Team team);
-    Team updateTeam(Team team);
-    void deleteTeam(int id);
+    Tournament getTournamentById(long id);
+    List<Tournament> getAllTournaments();
+    Tournament createTournament(Tournament Tournament);
+    Tournament updateTournament(Tournament Tournament);
+    void deleteTournament(long id);
 }

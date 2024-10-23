@@ -6,10 +6,10 @@ import java.util.List;
 
 public interface TournamentService {
     Tournament createTournament(Tournament tournament);
-    Tournament getTournamentById(int id);
+    Tournament getTournamentById(long id);
     Tournament updateTournament(Tournament tournament);
     List<Tournament> getAllTournaments();
-    void deleteTournament(int id);
-    int calculateEstimatedDuration(int tournamentId);
+    void deleteTournament(long id);
+    int calculateEstimatedDuration(long tournamentId);
 
 }

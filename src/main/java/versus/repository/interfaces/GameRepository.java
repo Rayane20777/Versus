@@ -5,9 +5,9 @@ import versus.model.Game;
 import java.util.List;
 
 public interface GameRepository {
-    Game findById(int id);
+    Game findById(long id);
     List<Game> findAll();
     Game save(Game game);
     Game update(Game game);
-    void delete(int id);
+    void delete(long id);
 }
