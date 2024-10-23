@@ -1,15 +1,21 @@
 package versus.repository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 import versus.model.Team;
 import versus.repository.interfaces.TeamRepository;
+import versus.util.EntityManagerUtil;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Transactional
 public class TeamRepositoryImpl implements TeamRepository {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlayerRepositoryImpl.class);
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -17,35 +23,94 @@ public class TeamRepositoryImpl implements TeamRepository {
 
     @Override
     public Team createTeam(Team Team) {
-        entityManager.getTransaction().begin();
-        entityManager.persist(Team);
-        entityManager.getTransaction().commit();
-        return Team;
+        EntityManager entityManager = EntityManagerUtil.getEntityManagerFactory().createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        try {
+            transaction.begin();
+            LOGGER.info("Saving Team: {}", Team.getName());
+            entityManager.persist(Team);
+            transaction.commit();
+            LOGGER.info("Team saved successfully with info: {}", Team);
+            return Team;
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            LOGGER.error("Error saving Team: {}", e.getMessage());
+            throw e;
+        } finally {
+            entityManager.close();
+        }
     }
 
     @Override
     public Team updateTeam(Team Team) {
-        entityManager.getTransaction().begin();
-        entityManager.merge(Team);
-        entityManager.getTransaction().commit();
-        return Team;
+        EntityManager entityManager = EntityManagerUtil.getEntityManagerFactory().createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        try {
+            transaction.begin();
+            LOGGER.info("Updating Team: {}", Team.getName());
+            entityManager.merge(Team);
+            transaction.commit();
+            LOGGER.info("Team updated successfully with info: {}", Team);
+            return Team;
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            LOGGER.error("Error updating Team: {}", e.getMessage());
+            throw e;
+        } finally {
+            entityManager.close();
+        }
     }
 
     @Override
     public List<Team> getAllTeams() {
-        return entityManager.createQuery("from Team", Team.class).getResultList();
+        EntityManager entityManager = EntityManagerUtil.getEntityManagerFactory().createEntityManager();
+        try {
+            LOGGER.info("Finding all Teams");
+            return entityManager.createQuery("SELECT t FROM Team t", Team.class).getResultList();
+        } finally {
+            entityManager.close();
+        }
     }
 
     @Override
     public Team getTeamById(long id) {
-        return entityManager.find(Team.class, id);
+        EntityManager entityManager = EntityManagerUtil.getEntityManagerFactory().createEntityManager();
+        try {
+            LOGGER.info("Finding Team with id: {}", id);
+            return entityManager.find(Team.class, id);
+        } finally {
+            entityManager.close();
+        }
     }
 
     @Override
     public void deleteTeam(long id) {
-        Team Team = getTeamById(id);
-        entityManager.getTransaction().begin();
-        entityManager.remove(Team);
-        entityManager.getTransaction().commit();
+        EntityManager entityManager = EntityManagerUtil.getEntityManagerFactory().createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        try {
+            transaction.begin();
+            LOGGER.info("Deleting Team with id: {}", id);
+            Team Team = entityManager.find(Team.class, id);
+            if (Team != null) {
+                entityManager.remove(Team);
+            }
+            transaction.commit();
+            LOGGER.info("Team deleted successfully");
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            LOGGER.error("Error deleting Team: {}", e.getMessage());
+            throw e;
+        } finally {
+            entityManager.close();
+        }
     }
 }

@@ -5,8 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 import versus.model.Player;
 import versus.repository.interfaces.PlayerRepository;
+import versus.util.EntityManagerUtil;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
@@ -14,49 +16,107 @@ import java.util.List;
 public class PlayerRepositoryImpl implements PlayerRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(PlayerRepositoryImpl.class);
 
-    @PersistenceContext
-    private EntityManager entityManager;
+
 
 
     @Override
     public Player createPlayer(Player player) {
-        LOGGER.info("Creating new player: {}", player.getName());
-        entityManager.getTransaction().begin();
-        entityManager.persist(player);
-        entityManager.getTransaction().commit();
-        LOGGER.info("Player created successfully with info: {}", player);
-        return player;
+        EntityManager entityManager = EntityManagerUtil.getEntityManagerFactory().createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        try {
+            transaction.begin();
+            LOGGER.info("Saving player: {}", player.getName());
+            entityManager.persist(player);
+            transaction.commit();
+            LOGGER.info("Player saved successfully with info: {}", player);
+            return player;
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            LOGGER.error("Error saving player: {}", e.getMessage());
+            throw e;
+        } finally {
+            entityManager.close();
+        }
     }
 
     @Override
     public Player updatePlayer(Player player) {
-        LOGGER.info("Updating player: {}", player.getName());
-        entityManager.getTransaction().begin();
-        entityManager.merge(player);
-        entityManager.getTransaction().commit();
-        LOGGER.info("Player updated successfully with info: {}", player);
-        return player;
+        EntityManager entityManager = EntityManagerUtil.getEntityManagerFactory().createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        try {
+            transaction.begin();
+            LOGGER.info("Updating player: {}", player.getName());
+            entityManager.merge(player);
+            transaction.commit();
+            LOGGER.info("Player updated successfully with info: {}", player);
+            return player;
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            LOGGER.error("Error updating player: {}", e.getMessage());
+            throw e;
+        } finally {
+            entityManager.close();
+        }
     }
 
     @Override
     public List<Player> getAllPlayers() {
-        LOGGER.info("Getting all players");
-        return entityManager.createQuery("from Player", Player.class).getResultList();
+        EntityManager entityManager = EntityManagerUtil.getEntityManagerFactory().createEntityManager();
+
+        try {
+            LOGGER.info("Finding all players");
+            return entityManager.createQuery("SELECT p FROM Player p", Player.class).getResultList();
+        } catch (Exception e) {
+            LOGGER.error("Error finding all players: {}", e.getMessage());
+            throw e;
+        } finally {
+            entityManager.close();
+        }
     }
 
     @Override
     public Player getPlayerById(long id) {
-        LOGGER.info("Getting player by id: {}", id);
-        return entityManager.find(Player.class, id);
+        EntityManager entityManager = EntityManagerUtil.getEntityManagerFactory().createEntityManager();
+
+        try {
+            LOGGER.info("Finding player with id: {}", id);
+            return entityManager.find(Player.class, id);
+        } catch (Exception e) {
+            LOGGER.error("Error finding player with id: {}", e.getMessage());
+            throw e;
+        } finally {
+            entityManager.close();
+        }
     }
 
     @Override
     public void deletePlayer(long id) {
-        LOGGER.info("Player found successfully with info: {}", id);
-        Player player = getPlayerById(id);
-        entityManager.getTransaction().begin();
-        entityManager.remove(player);
-        entityManager.getTransaction().commit();
-        LOGGER.info("Player found successfully with info: {}", id);
+        EntityManager entityManager = EntityManagerUtil.getEntityManagerFactory().createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        try {
+            transaction.begin();
+            LOGGER.info("Deleting player with id: {}", id);
+            Player player = entityManager.find(Player.class, id);
+            if (player != null) {
+                entityManager.remove(player);
+            }
+            transaction.commit();
+            LOGGER.info("Player deleted successfully");
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            LOGGER.error("Error deleting player: {}", e.getMessage());
+            throw e;
+        } finally {
+            entityManager.close();
+        }
     }
 }
