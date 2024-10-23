@@ -1,7 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/tx
+           http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <!-- H2 DataSource Bean -->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -11,11 +15,14 @@
         <property name="password" value="root"/>
     </bean>
 
-    <!-- Hibernate SessionFactory Bean -->
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+    <!-- Entity Manager Factory -->
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan" value="versus.model"/>
-        <property name="hibernateProperties">
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+        </property>
+        <property name="jpaProperties">
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
@@ -25,37 +32,11 @@
     </bean>
 
     <!-- Transaction Manager -->
-    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
-
-
-    <!-- Repository Beans -->
-    <bean id="gameRepository" class="versus.repository.GameRepositoryImpl">
-    </bean>
-    <bean id="playerRepository" class="versus.repository.PlayerRepositoryImpl"/>
-    <bean id="teamRepository" class="versus.repository.TeamRepositoryImpl"/>
-    <bean id="tournamentRepository" class="versus.repository.TournamentRepositoryImpl"/>
-    <bean id="tournamentRepositoryExtension" class="versus.repository.TournamentRepositoryExtension"/>
-
-    <!-- Service Beans -->
-    <bean id="gameService" class="versus.service.GameServiceImpl">
-        <constructor-arg ref="gameRepository"/>
-    </bean>
-    <bean id="playerService" class="versus.service.PlayerServiceImpl">
-        <constructor-arg ref="playerRepository"/>
-    </bean>
-    <bean id="teamService" class="versus.service.TeamServiceImpl">
-        <constructor-arg ref="teamRepository"/>
-    </bean>
-    <bean id="tournamentService" class="versus.service.TournamentServiceImpl">
-        <constructor-arg ref="tournamentRepository"/>
-    </bean>
-
-    <!-- Utility Bean -->
-    <bean id="helper" class="versus.util.Helper"/>
 
     <!-- Controller Beans -->
     <bean id="gameController" class="versus.controller.GameController">
@@ -71,6 +52,25 @@
         <constructor-arg ref="tournamentService"/>
     </bean>
 
+    <!-- Service Beans -->
+    <bean id="gameService" class="versus.service.GameServiceImpl">
+        <constructor-arg ref="gameRepository"/>
+    </bean>
+    <bean id="playerService" class="versus.service.PlayerServiceImpl">
+        <constructor-arg ref="playerRepository"/>
+    </bean>
+    <bean id="teamService" class="versus.service.TeamServiceImpl">
+        <constructor-arg ref="teamRepository"/>
+    </bean>
+    <bean id="tournamentService" class="versus.service.TournamentServiceImpl">
+        <constructor-arg ref="tournamentRepository"/>
+    </bean>
 
+    <!-- Repository Beans -->
+    <bean id="gameRepository" class="versus.repository.GameRepositoryImpl"/>
+    <bean id="playerRepository" class="versus.repository.PlayerRepositoryImpl"/>
+    <bean id="teamRepository" class="versus.repository.TeamRepositoryImpl"/>
+    <bean id="tournamentRepository" class="versus.repository.TournamentRepositoryImpl"/>
+    <bean id="tournamentRepositoryExtension" class="versus.repository.TournamentRepositoryExtension"/>
 
 </beans>
