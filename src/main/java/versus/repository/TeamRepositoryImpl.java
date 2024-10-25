@@ -17,8 +17,6 @@ public class TeamRepositoryImpl implements TeamRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlayerRepositoryImpl.class);
 
-    @PersistenceContext
-    private EntityManager entityManager;
 
 
     @Override
