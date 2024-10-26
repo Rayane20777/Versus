@@ -44,6 +44,7 @@
     </bean>
     <bean id="playerController" class="versus.controller.PlayerController">
         <constructor-arg ref="playerService"/>
+        <constructor-arg ref="teamService"/>
     </bean>
     <bean id="teamController" class="versus.controller.TeamController">
         <constructor-arg ref="teamService"/>

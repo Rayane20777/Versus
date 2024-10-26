@@ -6,6 +6,7 @@ import versus.model.Tournament;
 import versus.service.interfaces.TournamentService;
 import versus.repository.interfaces.TournamentRepository;
 import versus.repository.interfaces.GameRepository;
+import org.hibernate.Hibernate;
 
 import java.util.List;
 import java.util.Date;
@@ -37,8 +38,8 @@ public class TournamentServiceImpl implements TournamentService {
     @Override
     public Tournament getTournamentById(long id) {
         Tournament tournament = tournamentRepository.getTournamentById(id);
-        if (tournament != null) {
-            tournament.getGame().getName();
+        if (tournament != null && tournament.getGame() != null) {
+            Hibernate.initialize(tournament.getGame());
         }
         return tournament;
     }
@@ -54,6 +55,7 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public int calculateEstimatedDuration(long tournamentId) {
         Tournament tournament = getTournamentById(tournamentId);
         if (tournament == null || tournament.getGame() == null) {

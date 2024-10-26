@@ -12,6 +12,8 @@ import versus.service.interfaces.TeamService;
 import versus.service.interfaces.TournamentService;
 import versus.controller.GameController;
 import versus.controller.TournamentController;
+import versus.controller.PlayerController;
+import versus.controller.TeamController;
 
 import java.util.Scanner;
 
@@ -34,13 +36,15 @@ public class Landing {
         TournamentService tournamentService = context.getBean(TournamentService.class);
         GameController gameController = context.getBean(GameController.class);
         TournamentController tournamentController = context.getBean(TournamentController.class);
+        PlayerController playerController = context.getBean(PlayerController.class);
+        TeamController teamController = context.getBean(TeamController.class);
 
         boolean running = true;
         while (running) {
             displayLogo();
             displayMenu();
             int choice = readChoice();
-            running = processChoice(choice, playerService, teamService, tournamentService, gameController, tournamentController);
+            running = processChoice(choice, playerService, teamService, tournamentService, gameController, tournamentController, playerController, teamController);
         }
 
         logger.info("Application terminated.");
@@ -80,10 +84,11 @@ public class Landing {
         return scanner.nextInt();
     }
 
-    private static boolean processChoice(int choice, PlayerService playerService, TeamService teamService, TournamentService tournamentService, GameController gameController, TournamentController tournamentController) {
+    private static boolean processChoice(int choice, PlayerService playerService, TeamService teamService, TournamentService tournamentService, GameController gameController, TournamentController tournamentController, PlayerController playerController, TeamController teamController) {
         switch (choice) {
             case 1:
-                managePlayer(playerService);
+                PlayerConsole playerConsole = new PlayerConsole(playerController, teamController);
+                playerConsole.start();
                 break;
             case 2:
                 manageTeams(teamService);
