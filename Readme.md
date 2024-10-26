@@ -40,17 +40,12 @@ cd versus
 # Install dependencies:
 mvn clean install
 
+```
 
-Prerequisites
-Java 8: Required for running the application.
-Maven: Required for managing dependencies and building the project.
-Tomcat: Required for deploying the application.
+## Prerequisites
+- **Java 8**: Required for running the application.
+- **Maven**: Required for managing dependencies and building the project.
 
-
-Screenshots
-Include screenshots of the main console interface and various management functionalities.
-
-Database Setup Steps
 
 
 # Ensure H2 configurations are properly set in persistence.xml.
@@ -59,10 +54,10 @@ Database Setup Steps
 java -jar h2-x.x.x.jar
 
 
-Future Improvements
-Web-Based Interface: Add a front-end interface for broader accessibility.
-Extended Tournament Analytics: Advanced statistics tracking for players and teams.
-Real-Time Updates: Real-time tournament progress tracking using WebSockets.
+## Future Improvements
+- **Web-Based Interface**: Add a front-end interface for broader accessibility.
+- **Extended Tournament Analytics**: Advanced statistics tracking for players and teams.
+- **Real-Time Updates**: Real-time tournament progress tracking using WebSockets.
 
 
 
