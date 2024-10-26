@@ -11,6 +11,7 @@ import versus.service.interfaces.PlayerService;
 import versus.service.interfaces.TeamService;
 import versus.service.interfaces.TournamentService;
 import versus.controller.GameController;
+import versus.controller.TournamentController;
 
 import java.util.Scanner;
 
@@ -32,13 +33,14 @@ public class Landing {
         TeamService teamService = context.getBean(TeamService.class);
         TournamentService tournamentService = context.getBean(TournamentService.class);
         GameController gameController = context.getBean(GameController.class);
+        TournamentController tournamentController = context.getBean(TournamentController.class);
 
         boolean running = true;
         while (running) {
             displayLogo();
             displayMenu();
             int choice = readChoice();
-            running = processChoice(choice, playerService, teamService, tournamentService, gameController);
+            running = processChoice(choice, playerService, teamService, tournamentService, gameController, tournamentController);
         }
 
         logger.info("Application terminated.");
@@ -62,10 +64,10 @@ public class Landing {
 
     private static void displayMenu() {
         logger.info("\n===== Main Menu =====");
-        logger.info("1. Player Management");
-        logger.info("2. Team Management");
-        logger.info("3. Tournament Management");
-        logger.info("4. Game Management");
+        logger.info("1. Manage Players");
+        logger.info("2. Manage Teams");
+        logger.info("3. Manage Tournaments");
+        logger.info("4. Manage Games");
         logger.info("5. Exit");
         logger.info("Enter your choice (1-5): ");
     }
@@ -78,7 +80,7 @@ public class Landing {
         return scanner.nextInt();
     }
 
-    private static boolean processChoice(int choice, PlayerService playerService, TeamService teamService, TournamentService tournamentService, GameController gameController) {
+    private static boolean processChoice(int choice, PlayerService playerService, TeamService teamService, TournamentService tournamentService, GameController gameController, TournamentController tournamentController) {
         switch (choice) {
             case 1:
                 managePlayer(playerService);
@@ -87,7 +89,8 @@ public class Landing {
                 manageTeams(teamService);
                 break;
             case 3:
-                manageTournaments(tournamentService);
+                TournamentConsole tournamentConsole = new TournamentConsole(tournamentController, gameController);
+                tournamentConsole.start();
                 break;
             case 4:
                 manageGames(gameController);
@@ -110,13 +113,22 @@ public class Landing {
         logger.info("Team management...");
     }
 
-    private static void manageTournaments(TournamentService tournamentService) {
-        // Implement tournament management logic here
-        logger.info("Tournament management...");
+    private static void manageTournaments(TournamentController tournamentController, GameController gameController) {
+        TournamentConsole tournamentConsole = new TournamentConsole(tournamentController, gameController);
+        tournamentConsole.start();
     }
 
     private static void manageGames(GameController gameController) {
         GameConsole gameConsole = new GameConsole(gameController);
         gameConsole.start();
     }
+
+    private static void calculateEstimatedDuration(TournamentController tournamentController) {
+        logger.info("Enter tournament ID to calculate estimated duration: ");
+        long id = scanner.nextLong();
+        int duration = tournamentController.calculateEstimatedDuration(id);
+        logger.info("Estimated duration: " + duration + " minutes");
+    }
+
+
 }

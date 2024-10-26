@@ -64,6 +64,7 @@
     </bean>
     <bean id="tournamentService" class="versus.service.TournamentServiceImpl">
         <constructor-arg ref="tournamentRepository"/>
+        <constructor-arg ref="gameRepository"/>
     </bean>
 
     <!-- Repository Beans -->

@@ -18,7 +18,7 @@ public class Player {
 
     @NotNull
     @Size(min = 3, max = 50)
-    private String ingameName;
+    private String inGameName;
 
     @NotNull
     @Min(13) @Max(99)
@@ -32,9 +32,9 @@ public class Player {
     public Player() {
     }
 
-    public Player(String name, String ingameName, int age) {
+    public Player(String name, String inGameName, int age) {
         this.name = name;
-        this.ingameName = ingameName;
+        this.inGameName = inGameName;
         this.age = age;
     }
 
@@ -56,12 +56,12 @@ public class Player {
         this.name = name;
     }
 
-    public @NotNull @Size(min = 3, max = 50) String getIngameName() {
-        return ingameName;
+    public @NotNull @Size(min = 3, max = 50) String getinGameName() {
+        return inGameName;
     }
 
-    public void setIngameName(@NotNull @Size(min = 3, max = 50) String ingameName) {
-        this.ingameName = ingameName;
+    public void setinGameName(@NotNull @Size(min = 3, max = 50) String inGameName) {
+        this.inGameName = inGameName;
     }
 
     @NotNull
