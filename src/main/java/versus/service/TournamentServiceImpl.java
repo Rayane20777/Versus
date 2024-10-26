@@ -55,22 +55,7 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public int calculateEstimatedDuration(long tournamentId) {
-        Tournament tournament = getTournamentById(tournamentId);
-        if (tournament == null || tournament.getGame() == null) {
-            return 0;
-        }
-
-        int averageMatchDuration = tournament.getGame().getAverageMatchDuration();
-        int totalMatchTime = averageMatchDuration;
-        int totalBreakTime = tournament.getMatchBreakTime();
-        int ceremonyTime = tournament.getCeremonyTime();
-
-        return totalMatchTime + totalBreakTime + ceremonyTime;
+        throw new UnsupportedOperationException("calculateEstimatedDuration is not implemented in TournamentServiceImpl");
     }
-
-
-
-
 }
