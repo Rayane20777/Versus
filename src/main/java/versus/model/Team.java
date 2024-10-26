@@ -23,7 +23,8 @@ public class Team {
     @OneToMany(mappedBy = "team")
     private Set<Player> players;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tournament_id")
     private Tournament tournament;
 
     // Constructors

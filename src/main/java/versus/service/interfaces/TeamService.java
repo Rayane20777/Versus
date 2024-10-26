@@ -9,4 +9,6 @@ public interface TeamService {
     Team createTeam(Team team);
     Team updateTeam(Team team);
     void deleteTeam(long id);
+    boolean assignTeamToTournament(long teamId, long tournamentId);
+
 }

@@ -91,7 +91,8 @@ public class Landing {
                 playerConsole.start();
                 break;
             case 2:
-                manageTeams(teamService);
+                TeamConsole teamConsole = new TeamConsole(teamController);
+                teamConsole.start();
                 break;
             case 3:
                 TournamentConsole tournamentConsole = new TournamentConsole(tournamentController, gameController);

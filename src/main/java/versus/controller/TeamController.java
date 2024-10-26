@@ -43,4 +43,9 @@ public class TeamController {
         return teamService.getAllTeams();
     }
 
+    public boolean assignTeamToTournament(long teamId, long tournamentId) {
+        LOGGER.info("Assigning team {} to tournament {}", teamId, tournamentId);
+        return teamService.assignTeamToTournament(teamId, tournamentId);
+    }
+
 }

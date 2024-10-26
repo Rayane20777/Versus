@@ -50,6 +50,8 @@ public class Tournament {
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
+    @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Team> teams = new ArrayList<>();
 
     // Constructors
     public Tournament() {
@@ -146,5 +148,13 @@ public class Tournament {
 
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    public List<Team> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(List<Team> teams) {
+        this.teams = teams;
     }
 }
