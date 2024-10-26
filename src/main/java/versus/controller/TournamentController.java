@@ -16,7 +16,6 @@ public class TournamentController {
     private final TournamentService tournamentService;
 
     public TournamentController(TournamentService tournamentService) {
-        LOGGER.info("Creating TournamentController");
         this.tournamentService = tournamentService;
     }
 
@@ -44,5 +43,11 @@ public class TournamentController {
         LOGGER.info("Getting all tournaments");
         return tournamentService.getAllTournaments();
     }
+
+    public int calculateEstimatedDuration(long id) {
+        LOGGER.info("Calculating estimated duration for tournament with id: {}", id);
+        return tournamentService.calculateEstimatedDuration(id);
+    }
+
 
 }

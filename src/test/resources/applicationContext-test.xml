@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:tx="http://www.springframework.org/schema/tx"
@@ -7,12 +8,12 @@
            http://www.springframework.org/schema/tx
            http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <!-- H2 DataSource Bean -->
+    <!-- H2 In-Memory DataSource for Testing -->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.h2.Driver"/>
-        <property name="url" value="jdbc:h2:~/masterleague;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"/>
-        <property name="username" value="root"/>
-        <property name="password" value="root"/>
+        <property name="url" value="jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
     </bean>
 
     <!-- Entity Manager Factory -->
@@ -25,7 +26,7 @@
         <property name="jpaProperties">
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
-                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
                 <prop key="hibernate.show_sql">true</prop>
             </props>
         </property>
@@ -37,6 +38,28 @@
     </bean>
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- Repository Beans -->
+    <bean id="gameRepository" class="versus.repository.GameRepositoryImpl"/>
+    <bean id="playerRepository" class="versus.repository.PlayerRepositoryImpl"/>
+    <bean id="teamRepository" class="versus.repository.TeamRepositoryImpl"/>
+    <bean id="tournamentRepository" class="versus.repository.TournamentRepositoryImpl"/>
+
+    <!-- Service Beans -->
+    <bean id="gameService" class="versus.service.GameServiceImpl">
+        <constructor-arg ref="gameRepository"/>
+    </bean>
+    <bean id="playerService" class="versus.service.PlayerServiceImpl">
+        <constructor-arg ref="playerRepository"/>
+    </bean>
+    <bean id="teamService" class="versus.service.TeamServiceImpl">
+        <constructor-arg ref="teamRepository"/>
+        <constructor-arg ref="tournamentRepository"/>
+    </bean>
+    <bean id="tournamentService" class="versus.service.TournamentServiceImpl">
+        <constructor-arg ref="tournamentRepository"/>
+        <constructor-arg ref="gameRepository"/>
+    </bean>
 
     <!-- Controller Beans -->
     <bean id="gameController" class="versus.controller.GameController">
@@ -52,27 +75,5 @@
     <bean id="tournamentController" class="versus.controller.TournamentController">
         <constructor-arg ref="tournamentService"/>
     </bean>
-
-    <!-- Service Beans -->
-    <bean id="gameService" class="versus.service.GameServiceImpl">
-        <constructor-arg ref="gameRepository"/>
-    </bean>
-    <bean id="playerService" class="versus.service.PlayerServiceImpl">
-        <constructor-arg ref="playerRepository"/>
-    </bean>
-    <bean id="teamService" class="versus.service.TeamServiceImpl">
-        <constructor-arg ref="teamRepository"/>
-        <constructor-arg ref="tournamentRepository"/>
-    </bean>
-    <bean id="tournamentService" class="versus.service.TournamentServiceImplExtension">
-        <constructor-arg ref="tournamentRepository"/>
-        <constructor-arg ref="gameRepository"/>
-    </bean>
-
-    <!-- Repository Beans -->
-    <bean id="gameRepository" class="versus.repository.GameRepositoryImpl"/>
-    <bean id="playerRepository" class="versus.repository.PlayerRepositoryImpl"/>
-    <bean id="teamRepository" class="versus.repository.TeamRepositoryImpl"/>
-    <bean id="tournamentRepository" class="versus.repository.TournamentRepositoryImpl"/>
 
 </beans>

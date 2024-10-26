@@ -6,7 +6,9 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -19,8 +21,6 @@ public class Tournament {
     @Size(min = 1, max = 100)
     private String title;
 
-    @ManyToOne
-    private Game game;
 
     @Temporal(TemporalType.DATE)
     private Date startDate;
@@ -29,9 +29,6 @@ public class Tournament {
     private Date endDate;
 
     private int spectatorCount;
-
-    @OneToMany(mappedBy = "tournament")
-    private Set<Team> teams;
 
     @NotNull
     @Min(0)
@@ -48,17 +45,24 @@ public class Tournament {
     @Enumerated(EnumType.STRING)
     private TournamentStatus status;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "game_id", nullable = false)
+    private Game game;
+
+    @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Team> teams = new ArrayList<>();
+
     // Constructors
     public Tournament() {
     }
 
-    public Tournament(String title, Game game, Date startDate, Date endDate, int spectatorCount, Set<Team> teams, int estimatedDuration, int matchBreakTime, int ceremonyTime, TournamentStatus status) {
+    public Tournament(String title, Game game, Date startDate, Date endDate, int spectatorCount, int estimatedDuration, int matchBreakTime, int ceremonyTime, TournamentStatus status) {
         this.title = title;
         this.game = game;
         this.startDate = startDate;
         this.endDate = endDate;
         this.spectatorCount = spectatorCount;
-        this.teams = teams;
         this.estimatedDuration = estimatedDuration;
         this.matchBreakTime = matchBreakTime;
         this.ceremonyTime = ceremonyTime;
@@ -80,14 +84,6 @@ public class Tournament {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public Game getGame() {
-        return game;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
     }
 
     public Date getStartDate() {
@@ -112,14 +108,6 @@ public class Tournament {
 
     public void setSpectatorCount(int spectatorCount) {
         this.spectatorCount = spectatorCount;
-    }
-
-    public Set<Team> getTeams() {
-        return teams;
-    }
-
-    public void setTeams(Set<Team> teams) {
-        this.teams = teams;
     }
 
     public int getEstimatedDuration() {
@@ -152,5 +140,21 @@ public class Tournament {
 
     public void setStatus(TournamentStatus status) {
         this.status = status;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public List<Team> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(List<Team> teams) {
+        this.teams = teams;
     }
 }

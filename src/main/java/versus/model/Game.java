@@ -1,13 +1,12 @@
 package versus.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Game {
@@ -25,6 +24,10 @@ public class Game {
 
     @Min(1)
     private int averageMatchDuration;
+
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Tournament> tournaments = new ArrayList<>();
+
 
     // Constructors
     public Game() {
@@ -71,4 +74,15 @@ public class Game {
     public void setAverageMatchDuration(@Min(1) int averageMatchDuration) {
         this.averageMatchDuration = averageMatchDuration;
     }
+
+    public List<Tournament> getTournaments() {
+        return tournaments;
+    }
+
+    public void setTournaments(List<Tournament> tournaments) {
+        this.tournaments = tournaments;
+    }
+
 }
+
+
