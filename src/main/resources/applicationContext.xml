@@ -25,7 +25,7 @@
         <property name="jpaProperties">
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
-                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
                 <prop key="hibernate.show_sql">true</prop>
             </props>
         </property>
@@ -37,6 +37,23 @@
     </bean>
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <bean id="1st" class="versus.model.Prize">
+        <property name="amount" value="2000"/>
+        <property name="rank" value="1rst"/>
+    </bean>
+    <bean id="2nd" class="versus.model.Prize">
+        <property name="amount" value="600"/>
+        <property name="rank" value="2nd"/>
+
+    </bean>
+    <bean id="3rd" class="versus.model.Prize">
+        <property name="amount" value="3250"/>
+        <property name="rank" value="3rd"/>
+
+    </bean>
+
+
 
     <!-- Controller Beans -->
     <bean id="gameController" class="versus.controller.GameController">
@@ -63,16 +80,20 @@
     <bean id="teamService" class="versus.service.TeamServiceImpl">
         <constructor-arg ref="teamRepository"/>
         <constructor-arg ref="tournamentRepository"/>
+        <constructor-arg ref="prizeRepository"/>
     </bean>
     <bean id="tournamentService" class="versus.service.TournamentServiceImplExtension">
         <constructor-arg ref="tournamentRepository"/>
         <constructor-arg ref="gameRepository"/>
     </bean>
 
+
+
     <!-- Repository Beans -->
     <bean id="gameRepository" class="versus.repository.GameRepositoryImpl"/>
     <bean id="playerRepository" class="versus.repository.PlayerRepositoryImpl"/>
     <bean id="teamRepository" class="versus.repository.TeamRepositoryImpl"/>
     <bean id="tournamentRepository" class="versus.repository.TournamentRepositoryImpl"/>
+    <bean id="prizeRepository" class="versus.repository.PrizeRepositoryImpl"/>
 
 </beans>

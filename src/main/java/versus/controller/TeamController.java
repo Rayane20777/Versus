@@ -3,6 +3,7 @@ package versus.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import versus.model.Prize;
 import versus.model.Team;
 import versus.service.interfaces.TeamService;
 
@@ -46,6 +47,21 @@ public class TeamController {
     public boolean assignTeamToTournament(long teamId, long tournamentId) {
         LOGGER.info("Assigning team {} to tournament {}", teamId, tournamentId);
         return teamService.assignTeamToTournament(teamId, tournamentId);
+    }
+
+    public boolean assignPrizeToTeam(Long teamId, Prize prize) {
+        LOGGER.info("Assigning prize {} to team {}",  teamId);
+        return teamService.assignPriceToTeam(teamId, prize);
+    }
+
+    public List<Team> getTeamHavingPrize() {
+        LOGGER.info("Getting teams having prize");
+        return teamService.getTeamHavingPrize();
+    }
+
+    public List<Team> getTeamNotHavingPrize() {
+        LOGGER.info("Getting teams not having prize");
+        return teamService.getTeamNotHavingPrize();
     }
 
 }

@@ -44,6 +44,7 @@
     <bean id="playerRepository" class="versus.repository.PlayerRepositoryImpl"/>
     <bean id="teamRepository" class="versus.repository.TeamRepositoryImpl"/>
     <bean id="tournamentRepository" class="versus.repository.TournamentRepositoryImpl"/>
+    <bean id="prizeRepository" class="versus.repository.PrizeRepositoryImpl"/>
 
     <!-- Service Beans -->
     <bean id="gameService" class="versus.service.GameServiceImpl">
@@ -55,6 +56,7 @@
     <bean id="teamService" class="versus.service.TeamServiceImpl">
         <constructor-arg ref="teamRepository"/>
         <constructor-arg ref="tournamentRepository"/>
+        <constructor-arg ref="prizeRepository"/>
     </bean>
     <bean id="tournamentService" class="versus.service.TournamentServiceImpl">
         <constructor-arg ref="tournamentRepository"/>

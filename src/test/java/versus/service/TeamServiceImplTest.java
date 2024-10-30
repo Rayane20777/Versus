@@ -4,12 +4,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import versus.model.Prize;
 import versus.model.Team;
 import versus.model.Tournament;
+import versus.repository.interfaces.PrizeRepository;
 import versus.repository.interfaces.TeamRepository;
 import versus.repository.interfaces.TournamentRepository;
 import versus.service.interfaces.TeamService;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,12 +27,15 @@ public class TeamServiceImplTest {
     @Mock
     private TournamentRepository tournamentRepository;
 
+    @Mock
+    private PrizeRepository prizeRepository;
+
     private TeamService teamService;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        teamService = new TeamServiceImpl(teamRepository, tournamentRepository);
+        teamService = new TeamServiceImpl(teamRepository, tournamentRepository, prizeRepository);
     }
 
     @Test
@@ -110,5 +116,53 @@ public class TeamServiceImplTest {
         assertTrue(tournament.getTeams().contains(team));
         verify(teamRepository, times(1)).updateTeam(team);
         verify(tournamentRepository, times(1)).updateTournament(tournament);
+    }
+
+    @Test
+    public void testAssignPrizeToTeam() {
+        Team team = new Team("Team A", 1000);
+        team.setId(1L);
+        Prize prize = new Prize(1000, LocalDate.now(), "1st");
+
+        when(teamRepository.getTeamById(1L)).thenReturn(team);
+        when(prizeRepository.save(prize)).thenReturn(prize);
+        when(teamRepository.updateTeam(team)).thenReturn(team);
+
+        boolean result = teamService.assignPriceToTeam(1L, prize);
+
+        assertTrue(result);
+        assertEquals(prize, team.getPrize());
+        verify(prizeRepository, times(1)).save(prize);
+        verify(teamRepository, times(1)).updateTeam(team);
+    }
+
+    @Test
+    public void testGetTeamsWithPrize() {
+        Team team1 = new Team("Team A", 1000);
+        Team team2 = new Team("Team B", 900);
+        team2.setPrize(new Prize(500, LocalDate.now(), "2nd"));
+        List<Team> allTeams = Arrays.asList(team1, team2);
+
+        when(teamRepository.getAllTeams()).thenReturn(allTeams);
+
+        List<Team> teamsWithPrize = teamService.getTeamHavingPrize();
+
+        assertEquals(1, teamsWithPrize.size());
+        assertEquals(team2, teamsWithPrize.get(0));
+    }
+
+    @Test
+    public void testGetTeamsWithoutPrize() {
+        Team team1 = new Team("Team A", 1000);
+        Team team2 = new Team("Team B", 900);
+        team2.setPrize(new Prize(500, LocalDate.now(), "2nd"));
+        List<Team> allTeams = Arrays.asList(team1, team2);
+
+        when(teamRepository.getAllTeams()).thenReturn(allTeams);
+
+        List<Team> teamsWithoutPrize = teamService.getTeamNotHavingPrize();
+
+        assertEquals(1, teamsWithoutPrize.size());
+        assertEquals(team1, teamsWithoutPrize.get(0));
     }
 }

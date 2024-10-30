@@ -27,6 +27,11 @@ public class Team {
     @JoinColumn(name = "tournament_id")
     private Tournament tournament;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "prize_id")
+    private Prize prize;
+
+
     // Constructors
     public Team() {
     }
@@ -75,5 +80,13 @@ public class Team {
 
     public void setTournament(Tournament tournament) {
         this.tournament = tournament;
+    }
+
+    public Prize getPrize() {
+        return prize;
+    }
+
+    public void setPrize(Prize prize) {
+        this.prize = prize;
     }
 }

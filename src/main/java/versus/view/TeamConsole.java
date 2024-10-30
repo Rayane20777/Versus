@@ -2,7 +2,10 @@ package versus.view;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import versus.controller.TeamController;
+import versus.model.Prize;
 import versus.model.Team;
 
 import java.util.List;
@@ -12,6 +15,7 @@ public class TeamConsole {
     private static final Logger logger = LoggerFactory.getLogger(TeamConsole.class);
     private final TeamController teamController;
     private final Scanner scanner;
+    ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 
     public TeamConsole(TeamController teamController) {
         this.teamController = teamController;
@@ -35,8 +39,11 @@ public class TeamConsole {
         logger.info("4. Delete team");
         logger.info("5. View all teams");
         logger.info("6. Assign team to tournament");
-        logger.info("7. Return to main menu");
-        logger.info("Enter your choice (1-7): ");
+        logger.info("7. Assign prize to team");
+        logger.info("8. View teams with prizes");
+        logger.info("9. View teams without prizes");
+        logger.info("10. Return to main menu");
+        logger.info("Enter your choice (1-8): ");
     }
 
     private int readChoice() {
@@ -68,6 +75,15 @@ public class TeamConsole {
                 assignTeamToTournament();
                 break;
             case 7:
+                assignPrizeToTeam();
+                break;
+            case 8:
+                viewTeamsWithPrizes();
+                break;
+            case 9:
+                wiewPrizelessTeams();
+                break;
+            case 10:
                 return false;
             default:
                 logger.warn("Invalid choice. Please try again.");
@@ -177,6 +193,76 @@ public class TeamConsole {
             }
         } else {
             logger.info("Team not found.");
+        }
+    }
+
+    private void assignPrizeToTeam() {
+        logger.info("Enter team id: ");
+        long teamId = scanner.nextLong();
+
+        Team team = teamController.getTeamById(teamId);
+
+        if (team != null) {
+            logger.info("Enter placement (1, 2, or 3): ");
+            int placement = scanner.nextInt();
+
+            Prize prize = null;
+            switch (placement) {
+                case 1:
+                    prize = (Prize) context.getBean("1st");
+                    break;
+                case 2:
+                    prize = (Prize) context.getBean("2nd");
+                    break;
+                case 3:
+                    prize = (Prize) context.getBean("3rd");
+                    break;
+                default:
+                    logger.info("Invalid placement. Please enter 1, 2, or 3.");
+                    return;
+            }
+
+            if (prize != null) {
+                boolean success = teamController.assignPrizeToTeam(teamId, prize);
+                if (success) {
+                    logger.info("Prize of {} assigned to team successfully.", prize.getAmount());
+                } else {
+                    logger.info("Failed to assign prize to team.");
+                }
+            }
+        } else {
+            logger.info("Team not found.");
+        }
+    }
+
+    private void viewTeamsWithPrizes() {
+        List<Team> teams = teamController.getTeamHavingPrize();
+        if (teams.isEmpty()) {
+            logger.info("No teams with prizes found.");
+        } else {
+            logger.info("Teams with prizes:");
+            for (Team team : teams) {
+                logger.info("Team Information:");
+                displayTeam(team);
+                logger.info("Prize Information:");
+                logger.info("  Amount: ${}", team.getPrize().getAmount());
+                logger.info("  Rank: {}", team.getPrize().getRank());
+                logger.info("  Attribution Date: {}", team.getPrize().getAttributionDate());
+                logger.info("----------------------------------------");
+            }
+        }
+    }
+
+    private void wiewPrizelessTeams() {
+        List<Team> teams = teamController.getTeamNotHavingPrize();
+        if (teams.isEmpty()) {
+            logger.info("No teams without prizes found.");
+        } else {
+            logger.info("Teams without prizes:");
+            for (Team team : teams) {
+                displayTeam(team);
+                logger.info("----------------------------------------");
+            }
         }
     }
 }
